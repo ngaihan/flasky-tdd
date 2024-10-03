@@ -29,7 +29,6 @@ def login(client, username, password):
         follow_redirects=True,
     )
 
-
 def logout(client):
     """Logout helper function"""
     return client.get("/logout", follow_redirects=True)
@@ -39,12 +38,10 @@ def test_index(client):
     response = client.get("/", content_type="html/text")
     assert response.status_code == 200
 
-
 def test_database(client):
     """initial test. ensure that the database exists"""
-    tester = Path("test.db").is_file()
+    tester = Path("project/flaskr.db").is_file()
     assert tester
-
 
 def test_empty_db(client):
     """Ensure database is blank"""
@@ -81,3 +78,18 @@ def test_delete_message(client):
     rv = client.get('/delete/1')
     data = json.loads(rv.data)
     assert data["status"] == 1
+
+def test_search_with_query(client):
+    '''Create a test post'''
+    login(client, app.config["USERNAME"], app.config["PASSWORD"])
+    rv = client.post(
+        "/add",
+        data=dict(title="<Hello>", text="<strong>HTML</strong> allowed here"),
+        follow_redirects=True,
+    )
+
+    """Test /search/ with a query parameter"""
+    query = "Hello"
+    response = client.get(f"/search/?query={query}", follow_redirects=True)
+    assert response.status_code == 200
+    assert b"Hello" in response.data
