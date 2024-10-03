@@ -1,6 +1,7 @@
 import sqlite3
 from flask import Flask, g, render_template, request, session, flash, redirect, url_for, abort, jsonify
 import json
+#from waitress import serve
 
 # configuration
 DATABASE = "flaskr.db"
@@ -15,8 +16,7 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 # waitress init
-from waitress import serve
-serve(app, host="0.0.0.0", port=8080)
+
 
 # connect to database
 def connect_db():
@@ -108,4 +108,6 @@ def delete_entry(post_id):
     return jsonify(result)
 
 if __name__ == "__main__":
+    #serve(app, host="0.0.0.0", port=8080)
     app.run(host="0.0.0.0", port=5001)
+    
